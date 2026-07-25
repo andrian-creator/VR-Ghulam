@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A-Frame VR Showcase - HOP JUMP 3D Experience</title>
+  <meta name="description" content="Interaktif WebVR Showcase untuk 3D Model HOP JUMP menggunakan A-Frame 3D engine.">
+  
+  <!-- Fonts & Stylesheet -->
+  <link rel="stylesheet" href="./style.css">
+  
+  <!-- A-Frame WebXR Engine & Environment Component -->
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
+</head>
+<body>
+
+  <!-- Loading Screen Overlay -->
+  <div id="loader-overlay">
+    <div class="spinner-ring"></div>
+    <div class="loader-text">Memuat Objek 3D HOP JUMP...</div>
+    <div class="loader-subtext">Menyiapkan dunia A-Frame VR</div>
+  </div>
+
+  <!-- A-Frame VR Canvas Container -->
+  <div id="scene-container">
+    <a-scene 
+      embedded 
+      renderer="antialias: true; colorManagement: true; exposure: 1.2; highRefreshRate: true"
+      vr-mode-ui="enabled: false">
+      
+      <!-- Asset Manager -->
+      <a-assets>
+        <a-asset-item id="hopJumpAsset" src="./3D%20Asset/HOP%20JUMP.glb"></a-asset-item>
+      </a-assets>
+
+      <!-- VR Environment Skybox & Ground -->
+      <a-entity id="env-entity" environment="preset: neon; skyType: atmosphere; lighting: point; groundColor: #090a0f; grid: glowing; gridColor: #00f0ff"></a-entity>
+
+      <!-- Pedestal / Showcase Base -->
+      <a-entity id="pedestal-group" position="0 0 -4">
+        <!-- Outer Glowing Ring -->
+        <a-cylinder position="0 0.05 0" radius="2.6" height="0.1" color="#0e121d" material="roughness: 0.2; metalness: 0.8"></a-cylinder>
+        <a-ring position="0 0.11 0" rotation="-90 0 0" radius-inner="2.3" radius-outer="2.5" color="#00f0ff" material="emissive: #00f0ff; emissiveIntensity: 0.8"></a-ring>
+        <!-- Inner Pedestal -->
+        <a-cylinder position="0 0.2 0" radius="2" height="0.2" color="#161b26" material="roughness: 0.3; metalness: 0.9"></a-cylinder>
+        <a-ring position="0 0.31 0" rotation="-90 0 0" radius-inner="1.7" radius-outer="1.9" color="#7000ff" material="emissive: #7000ff; emissiveIntensity: 0.6"></a-ring>
+      </a-entity>
+
+      <!-- Lighting Setup -->
+      <a-entity id="ambient-light" light="type: ambient; color: #a0b0d0; intensity: 0.6"></a-entity>
+      <a-entity id="spotlight" light="type: spot; color: #00f0ff; intensity: 2.5; angle: 45; penumbra: 0.5" position="0 6 -2" target="#hop-jump-model"></a-entity>
+      <a-entity id="fill-light" light="type: point; color: #ff007b; intensity: 1.2; distance: 10" position="-3 3 -2"></a-entity>
+
+      <!-- HOP JUMP 3D Model -->
+      <a-entity 
+        id="hop-jump-model" 
+        gltf-model="#hopJumpAsset" 
+        position="0 0.3 -4" 
+        scale="1 1 1"
+        rotation="0 0 0">
+      </a-entity>
+
+      <!-- Camera Rig with Orbit & Smooth Transition Support -->
+      <a-entity id="camera-rig" position="0 1.8 0.5" rotation="0 0 0">
+        <a-camera id="main-camera" look-controls="pointerLockEnabled: false" wasd-controls="fly: false">
+          <!-- Cursor for VR Interaction -->
+          <a-cursor 
+            id="vr-cursor"
+            fuse="true" 
+            fuse-timeout="1500" 
+            color="#00f0ff"
+            scale="0.8 0.8 0.8"
+            animation__click="property: scale; startEvents: click; easing: easeInCubic; durability: 150; from: 0.1 0.1 0.1; to: 0.8 0.8 0.8"
+            animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; durability: 1500; from: 0.8 0.8 0.8; to: 0.2 0.2 0.2">
+          </a-cursor>
+        </a-camera>
+      </a-entity>
+
+    </a-scene>
+  </div>
+
+  <!-- Glassmorphic Web UI Overlay -->
+  <div id="ui-overlay">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand-container">
+        <div class="brand-logo-glow">VR</div>
+        <div class="brand-info">
+          <h1>HOP JUMP 3D Showcase</h1>
+          <p>A-Frame WebXR Experience</p>
+        </div>
+      </div>
+
+      <div class="header-badges">
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          <span id="status-text">Model Ready</span>
+        </div>
+        <button id="btn-sound" class="btn-header" title="Toggle Sound">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <span id="sound-label">Audio ON</span>
+        </button>
+        <button id="btn-fullscreen" class="btn-header" title="Fullscreen">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Layout (Sidebar & Dock) -->
+    <div class="main-content-layout">
+      
+      <!-- HUD Control Panel -->
+      <div class="hud-panel">
+        <div>
+          <div class="hud-section-title">Presets Kamera</div>
+          <div class="preset-grid">
+            <button class="btn-preset active" data-cam="overview">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 10l5 5-5 5M4 4v7a4 4 0 0 0 4 4h12"/></svg>
+              <span>Overview</span>
+            </button>
+            <button class="btn-preset" data-cam="closeup">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Close-up</span>
+            </button>
+            <button class="btn-preset" data-cam="topdown">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              <span>Top-Down</span>
+            </button>
+            <button class="btn-preset" data-cam="side">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <span>Side View</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div class="hud-section-title">Kontrol Model</div>
+          
+          <!-- Auto Rotate Slider -->
+          <div class="control-group">
+            <div class="control-label">
+              <span>Kecepatan Rotasi</span>
+              <span id="rotate-val" class="val">1.0x</span>
+            </div>
+            <input type="range" id="input-rotate" min="0" max="4" step="0.2" value="1.0">
+          </div>
+
+          <!-- Model Scale Slider -->
+          <div class="control-group" style="margin-top: 12px;">
+            <div class="control-label">
+              <span>Skala Model</span>
+              <span id="scale-val" class="val">1.0x</span>
+            </div>
+            <input type="range" id="input-scale" min="0.5" max="2.5" step="0.1" value="1.0">
+          </div>
+        </div>
+
+        <div>
+          <div class="hud-section-title">Lingkungan VR</div>
+          <div class="control-group">
+            <button id="btn-env-switch" class="btn-action-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 0 0 20z"/></button>
+              <span id="env-label">Preset: Neon Cyberpunk</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <button id="btn-jump-action" class="btn-action-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            Trigger HOP Jump FX
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Bottom Dock -->
+      <div class="quick-dock">
+        <button id="btn-enter-vr" class="btn-action-primary" style="padding: 10px 24px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 12a5 5 0 0 1 5-5h10a5 5 0 0 1 5 5v3a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-1a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-3z"></path>
+          </svg>
+          Masuk Mode VR
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Main Logic JavaScript -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
