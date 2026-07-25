@@ -3,9 +3,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const modelEl = document.querySelector('#hop-jump-model');
   const loaderOverlay = document.querySelector('#loader-overlay');
-  
-  let animationMixer = null;
-  let clock = new (window.THREE ? window.THREE.Clock : function() { this.getDelta = () => 0.016; })();
 
   // Protocol Check (CORS Warning for file://)
   if (window.location.protocol === 'file:') {
@@ -18,26 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Model Loading Listener - Auto-Play Embedded GLTF Animations
+  // Model Loading Listener
   modelEl.addEventListener('model-loaded', (evt) => {
     console.log('HOP JUMP 3D Model loaded successfully!');
     if (loaderOverlay) {
       loaderOverlay.classList.add('hidden');
     }
 
-    // Play embedded GLTF skeletal/mesh animation clips automatically
-    const mesh = modelEl.getObject3D('mesh');
-    if (mesh && evt.detail.model) {
-      const animations = evt.detail.model.animations || (mesh.geometry ? mesh.geometry.animations : []);
-      if (animations && animations.length > 0) {
-        console.log(`Found ${animations.length} embedded animation clip(s). Playing automatically...`);
-        animationMixer = new THREE.AnimationMixer(mesh);
-        animations.forEach((clip) => {
-          const action = animationMixer.clipAction(clip);
-          action.setLoop(THREE.LoopRepeat);
-          action.play();
-        });
-      }
+    // Ensure animation-mixer plays clip 'rigAction'
+    if (modelEl.components && modelEl.components['animation-mixer']) {
+      console.log('Animation Mixer active. Playing rigAction clip...');
     }
   });
 
@@ -58,41 +45,4 @@ document.addEventListener('DOMContentLoaded', () => {
       loaderOverlay.classList.add('hidden');
     }
   }, 3500);
-
-  // Automatic Movement Animation Loop (Continuous Rotation + Floating & Periodic Jump Arc)
-  let angle = 0;
-  const startY = 0.3;
-
-  function animateScene(timestamp) {
-    const delta = clock ? clock.getDelta() : 0.016;
-
-    // 1. Update GLTF Animation Mixer (if embedded clips exist)
-    if (animationMixer) {
-      animationMixer.update(delta);
-    }
-
-    // 2. Automatic Continuous Rotation & Natural Floating/Bounce Motion
-    if (modelEl) {
-      angle += 0.015;
-
-      // Continuous 360 Spin
-      const currentRot = modelEl.getAttribute('rotation') || { x: 0, y: 0, z: 0 };
-      modelEl.setAttribute('rotation', {
-        x: Math.sin(angle * 0.5) * 3,
-        y: (currentRot.y + 0.6) % 360,
-        z: Math.cos(angle * 0.5) * 3
-      });
-
-      // Automatic Floating + Parabolic Periodic HOP Bounce Arc
-      const floatY = Math.sin(angle * 2) * 0.15;
-      const jumpCycle = Math.pow(Math.abs(Math.sin(angle * 0.6)), 3) * 1.8;
-      const totalY = startY + floatY + jumpCycle;
-
-      modelEl.setAttribute('position', `0 ${totalY} -4`);
-    }
-
-    requestAnimationFrame(animateScene);
-  }
-
-  requestAnimationFrame(animateScene);
 });
