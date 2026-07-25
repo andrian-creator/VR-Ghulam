@@ -51,10 +51,11 @@
       <a-entity id="ambient-light" light="type: ambient; color: #ffffff; intensity: 0.8"></a-entity>
       <a-entity id="sunlight" light="type: directional; color: #ffffff; intensity: 1.2" position="2 10 3"></a-entity>
 
-      <!-- HOP JUMP 3D Model with Animation Mixer -->
+      <!-- HOP JUMP 3D Model with Auto-Play GLTF Animation -->
       <a-entity 
         id="hop-jump-model" 
         gltf-model="#hopJumpAsset" 
+        auto-play-gltf
         animation-mixer="clip: rigAction; loop: repeat; timeScale: 1"
         position="0 0.3 -4" 
         scale="1 1 1"

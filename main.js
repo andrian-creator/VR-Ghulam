@@ -1,5 +1,30 @@
 // main.js - A-Frame VR Automatic Animation Engine (No Overlay UI)
 
+// Register custom A-Frame component for guaranteed 100% native GLTF auto-animation playback
+AFRAME.registerComponent('auto-play-gltf', {
+  init: function () {
+    this.el.addEventListener('model-loaded', (e) => {
+      const model = e.detail.model;
+      if (model && model.animations && model.animations.length > 0) {
+        console.log('3D GLB Model Loaded. Auto-playing animation clips:', model.animations);
+        this.mixer = new THREE.AnimationMixer(model);
+        model.animations.forEach((clip) => {
+          const action = this.mixer.clipAction(clip);
+          action.setLoop(THREE.LoopRepeat);
+          action.clampWhenFinished = false;
+          action.enabled = true;
+          action.play();
+        });
+      }
+    });
+  },
+  tick: function (t, dt) {
+    if (this.mixer) {
+      this.mixer.update(dt / 1000);
+    }
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   const modelEl = document.querySelector('#hop-jump-model');
   const loaderOverlay = document.querySelector('#loader-overlay');
@@ -15,16 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Model Loading Listener
-  modelEl.addEventListener('model-loaded', (evt) => {
+  // Model Loading Listener - Hide Loader Overlay
+  modelEl.addEventListener('model-loaded', () => {
     console.log('HOP JUMP 3D Model loaded successfully!');
     if (loaderOverlay) {
       loaderOverlay.classList.add('hidden');
-    }
-
-    // Ensure animation-mixer plays clip 'rigAction'
-    if (modelEl.components && modelEl.components['animation-mixer']) {
-      console.log('Animation Mixer active. Playing rigAction clip...');
     }
   });
 
