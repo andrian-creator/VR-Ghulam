@@ -14,7 +14,29 @@ if (typeof WebVRPolyfill !== 'undefined') {
 }
 
 if (typeof AFRAME !== 'undefined') {
-  
+
+  // Fix VR Camera Near Plane Clipping to prevent WebGL distortion mesh clipping on mobile/iOS
+  AFRAME.registerComponent('fix-vr-camera', {
+    init: function () {
+      const el = this.el;
+      const setNearPlane = () => {
+        const camera = el.getObject3D('camera');
+        if (camera) {
+          camera.near = 0.01;
+          camera.updateProjectionMatrix();
+        }
+      };
+      el.addEventListener('camera-set-active', setNearPlane);
+      if (this.el.sceneEl) {
+        this.el.sceneEl.addEventListener('enter-vr', () => {
+          setTimeout(setNearPlane, 50);
+          setTimeout(setNearPlane, 300);
+        });
+      }
+      setNearPlane();
+    }
+  });
+
   // 1. Register VR Main Title Component (Luckiest Guy 3D Font)
   AFRAME.registerComponent('vr-title', {
     schema: {

@@ -12,7 +12,7 @@
   <script src="https://cdn.jsdelivr.net/gh/webvr-polyfill/webvr-polyfill@latest/build/webvr-polyfill.min.js"></script>
 
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=22">
 
   <!-- JavaScript Logic & A-Frame Custom Components -->
   <script src="main.js"></script>
@@ -294,7 +294,7 @@
 
       <!-- VR Camera Rig at Center of the Field -->
       <a-entity id="rig" position="0 1.6 0">
-        <a-camera id="main-camera" look-controls="pointerLockEnabled: false" wasd-controls="fly: false">
+        <a-camera id="main-camera" camera="near: 0.01; far: 1000" fix-vr-camera look-controls="pointerLockEnabled: false" wasd-controls="fly: false">
           <a-cursor id="vr-cursor" color="#FF4757" fuse="true" fuse-timeout="2500" raycaster="objects: .clickable"
             animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
             animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 2500; from: 1 1 1; to: 0.2 0.2 0.2"
