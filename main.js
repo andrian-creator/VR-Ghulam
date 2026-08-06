@@ -3,11 +3,15 @@
  * Dynamically matches card shape aspect ratio to image aspect ratio (Zero Cropping, Zero Bars).
  */
 
-// Initialize WebVR Cardboard Polyfill (Guarantees 2-Eye Stereo Split on Desktop & Mobile)
+// Initialize WebVR Cardboard Polyfill with clean options for iOS Retina displays
 if (typeof WebVRPolyfill !== 'undefined') {
   try {
-    new WebVRPolyfill();
-    console.log('🥽 WebVR Cardboard Polyfill Active!');
+    new WebVRPolyfill({
+      CARDBOARD_UI_DISABLED: true,
+      BUFFER_SCALE: 1.0,
+      DIRTY_SUBMIT_FRAME_BINDING: true
+    });
+    console.log('🥽 WebVR Cardboard Polyfill Active with Clean Stereo View!');
   } catch (e) {
     console.log('WebVRPolyfill init:', e);
   }
@@ -22,7 +26,8 @@ if (typeof AFRAME !== 'undefined') {
       const setNearPlane = () => {
         const camera = el.getObject3D('camera');
         if (camera) {
-          camera.near = 0.01;
+          camera.near = 0.1;
+          camera.far = 1000;
           camera.updateProjectionMatrix();
         }
       };
@@ -30,7 +35,8 @@ if (typeof AFRAME !== 'undefined') {
       if (this.el.sceneEl) {
         this.el.sceneEl.addEventListener('enter-vr', () => {
           setTimeout(setNearPlane, 50);
-          setTimeout(setNearPlane, 300);
+          setTimeout(setNearPlane, 200);
+          setTimeout(setNearPlane, 500);
         });
       }
       setNearPlane();

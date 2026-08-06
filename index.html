@@ -12,7 +12,7 @@
   <script src="https://cdn.jsdelivr.net/gh/webvr-polyfill/webvr-polyfill@latest/build/webvr-polyfill.min.js"></script>
 
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=26">
+  <link rel="stylesheet" href="styles.css?v=27">
 
   <!-- JavaScript Logic & A-Frame Custom Components -->
   <script src="main.js"></script>
@@ -139,7 +139,8 @@
     </div>
 
     <!-- 3D Athletics Oval Track Scene with 6 Selection Cards -->
-    <a-scene id="main-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" embedded="false">
+    <a-scene id="main-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" embedded="false"
+      renderer="antialias: true; precision: medium; colorManagement: true; logarithmicDepthBuffer: false">
 
       <a-assets>
         <img id="img-home-banner" src="Image/Home.png">
