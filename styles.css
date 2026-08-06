@@ -138,11 +138,8 @@ body {
   line-height: 1.05;
   margin-bottom: 24px;
   letter-spacing: 1.5px;
-  -webkit-text-stroke: 3px #FFFFFF;
-  paint-order: stroke fill;
-  text-shadow:
-    5px 5px 0px #FF4757,
-    10px 10px 0px #FFA502;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
   transform: rotate(-1.5deg);
   display: inline-block;
 }
@@ -707,10 +704,8 @@ body {
     line-height: 1.08 !important;
     margin-bottom: 12px !important;
     transform: rotate(0deg) !important;
-    -webkit-text-stroke: 2.2px #FFFFFF !important;
-    text-shadow:
-      4px 4px 0px #FF4757,
-      8px 8px 0px #FFA502 !important;
+    -webkit-text-stroke: 0 !important;
+    text-shadow: none !important;
   }
 
   .hero-actions {
