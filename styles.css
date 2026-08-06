@@ -138,7 +138,8 @@ body {
   line-height: 1.05;
   margin-bottom: 24px;
   letter-spacing: 1.5px;
-  -webkit-text-stroke: 0;
+  -webkit-text-stroke: 3px #FFFFFF;
+  paint-order: stroke fill;
   text-shadow: none;
   transform: rotate(-1.5deg);
   display: inline-block;
@@ -704,7 +705,8 @@ body {
     line-height: 1.08 !important;
     margin-bottom: 12px !important;
     transform: rotate(0deg) !important;
-    -webkit-text-stroke: 0 !important;
+    -webkit-text-stroke: 2.5px #FFFFFF !important;
+    paint-order: stroke fill !important;
     text-shadow: none !important;
   }
 
