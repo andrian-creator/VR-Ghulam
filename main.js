@@ -133,7 +133,7 @@ if (typeof AFRAME !== 'undefined') {
       // 3. Load Custom Image for Card (100% Uniform Shape Fit - Zero Cropping!)
       if (this.data.imgSrc) {
         const img = new Image();
-        img.onload = () => {
+        const drawCard = () => {
           ctx.save();
           ctx.beginPath();
           if (ctx.roundRect) {
@@ -148,9 +148,144 @@ if (typeof AFRAME !== 'undefined') {
           ctx.restore();
 
           texture.needsUpdate = true;
+          if (mesh && mesh.material) mesh.material.needsUpdate = true;
         };
+
+        img.onload = drawCard;
         img.src = this.data.imgSrc;
+        if (img.complete) drawCard();
       }
+    }
+  });
+
+  // 3. Custom A-Frame Component for 3D Rounded Container Shape Frame
+  AFRAME.registerComponent('rounded-frame', {
+    schema: {
+      width: { type: 'number', default: 11 },
+      height: { type: 'number', default: 7.4 },
+      radius: { type: 'number', default: 40 },
+      color: { type: 'string', default: '#FFFFFF' },
+      innerColor: { type: 'string', default: '#1E272C' },
+      borderWidth: { type: 'number', default: 14 }
+    },
+    init: function () {
+      this.render();
+    },
+    render: function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1100;
+      canvas.height = 740;
+      const ctx = canvas.getContext('2d');
+
+      const drawRoundRect = (x, y, w, h, r) => {
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(x, y, w, h, r);
+        } else {
+          ctx.moveTo(x + r, y);
+          ctx.lineTo(x + w - r, y);
+          ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+          ctx.lineTo(x + w, y + h - r);
+          ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+          ctx.lineTo(x + r, y + h);
+          ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+          ctx.lineTo(x, y + r);
+          ctx.quadraticCurveTo(x, y, x + r, y);
+        }
+        ctx.closePath();
+      };
+
+      // 1. Outer White Rounded Frame Shape
+      drawRoundRect(4, 4, canvas.width - 8, canvas.height - 8, this.data.radius);
+      ctx.fillStyle = this.data.color;
+      ctx.fill();
+
+      // 2. Inner Rounded Container Area
+      const bw = this.data.borderWidth;
+      drawRoundRect(4 + bw, 4 + bw, canvas.width - 8 - (bw * 2), canvas.height - 8 - (bw * 2), Math.max(8, this.data.radius - bw));
+      ctx.fillStyle = this.data.innerColor;
+      ctx.fill();
+
+      const texture = new THREE.CanvasTexture(canvas);
+      let mesh = this.el.getObject3D('mesh');
+      if (!mesh) {
+        const geometry = new THREE.PlaneGeometry(this.data.width, this.data.height);
+        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
+        mesh = new THREE.Mesh(geometry, material);
+        this.el.setObject3D('mesh', mesh);
+      } else {
+        mesh.material.map = texture;
+        mesh.material.needsUpdate = true;
+      }
+    }
+  });
+
+  // 4. Custom A-Frame Component for Rounded Image Banner (Clips Home.png with Rounded Corners)
+  AFRAME.registerComponent('rounded-banner', {
+    schema: {
+      width: { type: 'number', default: 10.5 },
+      height: { type: 'number', default: 7 },
+      radius: { type: 'number', default: 56 },
+      imgSrc: { type: 'string', default: 'Image/Home.png' }
+    },
+    init: function () {
+      this.render();
+    },
+    update: function () {
+      this.render();
+    },
+    render: function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1536;
+      canvas.height = 1024;
+      const ctx = canvas.getContext('2d');
+
+      const drawRoundRectPath = (x, y, w, h, r) => {
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(x, y, w, h, r);
+        } else {
+          ctx.moveTo(x + r, y);
+          ctx.lineTo(x + w - r, y);
+          ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+          ctx.lineTo(x + w, y + h - r);
+          ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+          ctx.lineTo(x + r, y + h);
+          ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+          ctx.lineTo(x, y + r);
+          ctx.quadraticCurveTo(x, y, x + r, y);
+        }
+        ctx.closePath();
+      };
+
+      const texture = new THREE.CanvasTexture(canvas);
+      let mesh = this.el.getObject3D('mesh');
+      if (!mesh) {
+        const geometry = new THREE.PlaneGeometry(this.data.width, this.data.height);
+        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
+        mesh = new THREE.Mesh(geometry, material);
+        this.el.setObject3D('mesh', mesh);
+      } else {
+        mesh.material.map = texture;
+        mesh.material.needsUpdate = true;
+      }
+
+      const img = new Image();
+      const draw = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        drawRoundRectPath(0, 0, canvas.width, canvas.height, this.data.radius);
+        ctx.clip();
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+
+        texture.needsUpdate = true;
+        if (mesh && mesh.material) mesh.material.needsUpdate = true;
+      };
+
+      img.onload = draw;
+      img.src = this.data.imgSrc || 'Image/Home.png';
+      if (img.complete) draw();
     }
   });
 }
@@ -163,6 +298,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Modal & VR Containers
   const modalProfil = document.getElementById('modal-profil');
   const btnCloseProfil = document.getElementById('btn-close-profil');
+  const btnMateri = document.getElementById('btn-materi');
+  const modalMateri = document.getElementById('modal-materi');
+  const btnCloseMateri = document.getElementById('btn-close-materi');
   const vrWrapper = document.getElementById('vr-wrapper');
   const btnVrBack = document.getElementById('btn-vr-back');
   const appViewport = document.getElementById('app-viewport');
@@ -267,6 +405,14 @@ document.addEventListener('DOMContentLoaded', () => {
       vrWrapper.style.display = 'block';
     }
 
+    const vrMenuGroup = document.getElementById('vr-menu-group');
+    const vrActivityGroup = document.getElementById('vr-activity-group');
+    const vrHomeBanner = document.getElementById('vr-home-banner');
+    if (vrMenuGroup) vrMenuGroup.setAttribute('visible', 'true');
+    if (vrActivityGroup) vrActivityGroup.setAttribute('visible', 'false');
+    if (vrHomeBanner) vrHomeBanner.setAttribute('visible', 'true');
+    stopHopJumpAnimation();
+
     resetCameraView('main-camera');
 
     const scene = document.querySelector('a-scene');
@@ -283,9 +429,14 @@ document.addEventListener('DOMContentLoaded', () => {
     playSound('click');
     stopHopJumpAnimation();
     resetCameraView('main-camera');
-    resetCameraView('hopjump-camera');
 
-    if (vrHopjumpWrapper) vrHopjumpWrapper.style.display = 'none';
+    const vrMenuGroup = document.getElementById('vr-menu-group');
+    const vrActivityGroup = document.getElementById('vr-activity-group');
+    const vrHomeBanner = document.getElementById('vr-home-banner');
+    if (vrActivityGroup) vrActivityGroup.setAttribute('visible', 'false');
+    if (vrMenuGroup) vrMenuGroup.setAttribute('visible', 'true');
+    if (vrHomeBanner) vrHomeBanner.setAttribute('visible', 'true');
+
     if (vrWrapper) {
       vrWrapper.classList.remove('active');
       vrWrapper.style.display = 'none';
@@ -343,36 +494,30 @@ document.addEventListener('DOMContentLoaded', () => {
   // Open Dedicated Hop Jump A-Frame Scene (Resets Animation from Frame 0 & Camera View)
   const openHopJumpScene = () => {
     playSound('success');
-    if (vrWrapper) vrWrapper.style.display = 'none';
-    if (vrHopjumpWrapper) {
-      vrHopjumpWrapper.style.display = 'block';
-    }
+    const vrMenuGroup = document.getElementById('vr-menu-group');
+    const vrActivityGroup = document.getElementById('vr-activity-group');
+    const vrHomeBanner = document.getElementById('vr-home-banner');
+    if (vrMenuGroup) vrMenuGroup.setAttribute('visible', 'false');
+    if (vrActivityGroup) vrActivityGroup.setAttribute('visible', 'true');
+    if (vrHomeBanner) vrHomeBanner.setAttribute('visible', 'false');
 
     resetHopJumpAnimation();
-    resetCameraView('hopjump-camera');
-
-    const hopjumpScene = document.getElementById('hopjump-scene');
-    if (hopjumpScene) {
-      if (hopjumpScene.hasLoaded) {
-        hopjumpScene.resize();
-      } else {
-        hopjumpScene.addEventListener('loaded', () => hopjumpScene.resize());
-      }
-    }
+    resetCameraView('main-camera');
   };
 
   // Close Hop Jump Scene and Return to Main VR Menu (Resets Camera View)
   const closeHopJumpScene = () => {
     playSound('click');
     stopHopJumpAnimation();
-    resetCameraView('main-camera');
 
-    if (vrHopjumpWrapper) vrHopjumpWrapper.style.display = 'none';
-    if (vrWrapper) {
-      vrWrapper.style.display = 'block';
-      const mainScene = document.querySelector('a-scene');
-      if (mainScene) mainScene.resize();
-    }
+    const vrMenuGroup = document.getElementById('vr-menu-group');
+    const vrActivityGroup = document.getElementById('vr-activity-group');
+    const vrHomeBanner = document.getElementById('vr-home-banner');
+    if (vrActivityGroup) vrActivityGroup.setAttribute('visible', 'false');
+    if (vrMenuGroup) vrMenuGroup.setAttribute('visible', 'true');
+    if (vrHomeBanner) vrHomeBanner.setAttribute('visible', 'true');
+
+    resetCameraView('main-camera');
   };
 
   // Setup Event Listeners for 6 VR Menu Cards
@@ -469,7 +614,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (btnHopjumpBack) btnHopjumpBack.addEventListener('click', closeHopJumpScene);
   if (btnHeroVR) btnHeroVR.addEventListener('click', enterVRScene);
-  if (btnVrBack) btnVrBack.addEventListener('click', exitVRScene);
+  if (btnVrBack) {
+    btnVrBack.addEventListener('click', () => {
+      const vrActivityGroup = document.getElementById('vr-activity-group');
+      if (vrActivityGroup && (vrActivityGroup.getAttribute('visible') === 'true' || vrActivityGroup.getAttribute('visible') === true)) {
+        closeHopJumpScene();
+      } else {
+        exitVRScene();
+      }
+    });
+  }
 
   // Profile Modal Event Listeners
   if (navProfil) navProfil.addEventListener('click', openProfilModal);
@@ -481,10 +635,39 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- Materi Modal Handlers ---
+  const openMateriModal = () => {
+    playSound('pop');
+    if (modalMateri) {
+      modalMateri.classList.add('active');
+      modalMateri.setAttribute('aria-hidden', 'false');
+    }
+  };
+
+  const closeMateriModal = () => {
+    playSound('click');
+    if (modalMateri) {
+      modalMateri.classList.remove('active');
+      modalMateri.setAttribute('aria-hidden', 'true');
+    }
+  };
+
+  // Materi Modal Event Listeners
+  if (btnMateri) btnMateri.addEventListener('click', openMateriModal);
+  if (btnCloseMateri) btnCloseMateri.addEventListener('click', closeMateriModal);
+
+  if (modalMateri) {
+    modalMateri.addEventListener('click', (e) => {
+      if (e.target === modalMateri) closeMateriModal();
+    });
+  }
+
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       if (modalProfil && modalProfil.classList.contains('active')) {
         closeProfilModal();
+      } else if (modalMateri && modalMateri.classList.contains('active')) {
+        closeMateriModal();
       } else if (vrHopjumpWrapper && vrHopjumpWrapper.style.display === 'block') {
         closeHopJumpScene();
       } else if (vrWrapper && vrWrapper.classList.contains('active')) {

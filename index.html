@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Fusion Raceway Circuit - WebVR Experience</title>
-  
+
   <!-- A-Frame VR Library & WebVR Cardboard Polyfill -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/webvr-polyfill/webvr-polyfill@latest/build/webvr-polyfill.min.js"></script>
 
   <!-- CSS Stylesheet -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=17">
+
+  <!-- JavaScript Logic & A-Frame Custom Components -->
+  <script src="main.js"></script>
 </head>
+
 <body>
 
   <div id="app-viewport">
-    
+
     <!-- =========================================================
          TOP NAVIGATION BAR
          ========================================================= -->
     <header class="navbar">
       <!-- Navigation Menu: Profil Pengembang Image -->
       <nav class="nav-menu">
-        <button id="nav-profil" class="btn-profile-icon" type="button" aria-label="Profil Pengembang" title="Profil Pengembang">
+        <button id="nav-profil" class="btn-profile-icon" type="button" aria-label="Profil Pengembang"
+          title="Profil Pengembang">
           <img src="Image/profil.png" alt="Profil Pengembang" class="nav-profile-img">
         </button>
       </nav>
@@ -33,24 +39,30 @@
          HERO MAIN SECTION
          ========================================================= -->
     <main class="hero-section">
-      
+
       <!-- Left Hero Content -->
       <section class="hero-content">
-        <h1 class="hero-title">Fusion Raceway Circuit</h1>
+        <h1 class="hero-title">FUSION<br>RACEWAY CIRCUIT</h1>
 
         <div class="hero-subtitle-box">
           <div class="accent-bar"></div>
           <div>
             <h2 class="subtitle-text">Eksplorasi Permainan Lebih Seru dan Pintar</h2>
             <p class="description-text">
-              Pengalaman berpetualang dan belajar sains interaktif di dunia Virtual Reality yang menyenangkan khusus untuk siswa Sekolah Dasar.
+              Pengalaman berpetualang dan belajar sains interaktif di dunia Virtual Reality yang menyenangkan khusus
+              untuk siswa Sekolah Dasar.
             </p>
           </div>
         </div>
 
         <div class="hero-actions">
           <button id="btn-hero-vr" class="btn-hero-outline" type="button">
-            🚀 EKSPLORASI VR
+            <img src="Image/play.png" alt="Play" class="btn-play-icon">
+            <span>Mulai Eksplorasi</span>
+          </button>
+          <button id="btn-materi" class="btn-hero-outline btn-hero-secondary" type="button">
+            <img src="Image/book.png" alt="Materi" class="btn-play-icon">
+            <span>Materi</span>
           </button>
         </div>
       </section>
@@ -67,39 +79,48 @@
 
   </div>
 
-  <!-- =========================================================
-       MODAL: PROFIL PENGEMBANG
-       ========================================================= -->
+  <!-- MODAL POPUP: PROFIL PENGEMBANG (UNESA & GHULAM ZAKY ISMAIL) -->
   <div id="modal-profil" class="modal-overlay" aria-hidden="true" role="dialog">
     <div class="modal-card">
-      <button id="btn-close-profil" class="btn-modal-close" aria-label="Tutup">&times;</button>
-      
-      <img src="Image/profil.png" alt="Profil Pengembang" class="modal-avatar-img">
-      <h2 class="modal-title">Profil Pengembang</h2>
-      <p class="modal-subtitle">Pengembang Aplikasi & Dosen Pembimbing</p>
-
-      <div class="modal-info-box">
+      <button id="btn-close-profil" class="btn-modal-close" aria-label="Tutup Modal">
+        <img src="Image/close.png" alt="Tutup" class="btn-close-icon-img">
+      </button>
+      <div class="modal-avatar">
+        <img src="Image/photoprofil.jpg" alt="Ghulam Zaky Ismail, S.Pd., M.Pd.">
+      </div>
+      <h2 class="modal-title">Ghulam Zaky Ismail, S.Pd., M.Pd.</h2>
+      <p class="modal-role">Dosen & Pengembang Media Pembelajaran VR</p>
+      <div class="modal-info">
         <div class="info-item">
-          <span>👤</span>
-          <div>
-            <strong>Nama:</strong><br>
-            <span>Ghulam Zaky Ismail, S.Pd., M.Pd.</span>
-          </div>
-        </div>
-        <div class="info-item">
-          <span>📧</span>
+          <img src="Image/email.png" alt="Email Icon" class="info-item-icon">
           <div>
             <strong>Email:</strong><br>
             <a href="mailto:ghulamismail@unesa.ac.id" class="email-link">ghulamismail@unesa.ac.id</a>
           </div>
         </div>
         <div class="info-item">
-          <span>🎓</span>
+          <img src="Image/campus.png" alt="Campus Icon" class="info-item-icon">
           <div>
             <strong>Instansi:</strong><br>
-            <span>Universitas Negeri Surabaya (UNESA)</span>
+            <span>Universitas Negeri Surabaya</span>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL POPUP: MATERI LEARNING (Google Drive Document Viewer) -->
+  <div id="modal-materi" class="modal-overlay" aria-hidden="true" role="dialog">
+    <div class="modal-card modal-card-large">
+      <button id="btn-close-materi" class="btn-modal-close" aria-label="Tutup Modal">
+        <img src="Image/close.png" alt="Tutup" class="btn-close-icon-img">
+      </button>
+      <div class="modal-header-materi">
+        <img src="Image/book.png" alt="Materi Icon" class="modal-header-icon">
+        <h2 class="modal-title modal-title-normal">Materi Fusion Raceway Circuit</h2>
+      </div>
+      <div class="iframe-container-materi">
+        <iframe id="iframe-materi" src="https://drive.google.com/file/d/1G-cJUEXLen4_uOz20SHgK4CdWGzkbnCZ/preview" allow="autoplay" title="Materi Pembelajaran VR"></iframe>
       </div>
     </div>
   </div>
@@ -107,18 +128,24 @@
   <!-- =========================================================
        VR SCENE CONTAINER - 3D OVAL TRACK WITH 6 SELECTION CARDS
        ========================================================= -->
-  <div id="vr-wrapper">
-    
+  <div id="vr-wrapper" style="display: none;">
+
     <!-- Top HUD Navigation inside VR -->
     <div class="vr-hud-bar">
-      <button id="btn-vr-back" class="btn-hud-back" type="button" aria-label="Kembali ke Dashboard Utama" title="Kembali ke Dashboard Utama">
+      <button id="btn-vr-back" class="btn-hud-back" type="button" aria-label="Kembali ke Dashboard Utama"
+        title="Kembali ke Dashboard Utama">
         <img src="Image/back.png" alt="Kembali" class="btn-hud-icon-img">
       </button>
     </div>
 
     <!-- 3D Athletics Oval Track Scene with 6 Selection Cards -->
     <a-scene id="main-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" embedded="false">
-      
+
+      <a-assets>
+        <img id="img-home-banner" src="Image/Home.png">
+        <img id="img-back-icon" src="Image/back.png">
+      </a-assets>
+
       <!-- Bright Outdoor Skybox & Lighting -->
       <a-sky color="#00A8FF"></a-sky>
       <a-ambient-light color="#FFFFFF" intensity="0.9"></a-ambient-light>
@@ -126,14 +153,19 @@
       <a-point-light color="#00CEC9" intensity="0.8" position="0 10 0"></a-point-light>
 
       <!-- 1. Single Uniform Lush Grass Field Ground -->
-      <a-plane position="0 0 0" rotation="-90 0 0" width="200" height="160" color="#27AE60" material="roughness: 0.8"></a-plane>
+      <a-plane position="0 0 0" rotation="-90 0 0" width="200" height="160" color="#27AE60"
+        material="roughness: 0.8"></a-plane>
 
       <!-- 2. Red Terracotta Oval Track -->
-      <a-plane position="0 0.01 18" rotation="-90 0 0" width="50" height="12" color="#E74C3C" material="roughness: 0.7"></a-plane>
-      <a-plane position="0 0.01 -18" rotation="-90 0 0" width="50" height="12" color="#E74C3C" material="roughness: 0.7"></a-plane>
+      <a-plane position="0 0.01 18" rotation="-90 0 0" width="50" height="12" color="#E74C3C"
+        material="roughness: 0.7"></a-plane>
+      <a-plane position="0 0.01 -18" rotation="-90 0 0" width="50" height="12" color="#E74C3C"
+        material="roughness: 0.7"></a-plane>
 
-      <a-ring position="-25 0.01 0" rotation="-90 0 0" radius-inner="12" radius-outer="24" theta-length="180" theta-start="90" color="#E74C3C" material="roughness: 0.7"></a-ring>
-      <a-ring position="25 0.01 0" rotation="-90 0 0" radius-inner="12" radius-outer="24" theta-length="180" theta-start="270" color="#E74C3C" material="roughness: 0.7"></a-ring>
+      <a-ring position="-25 0.01 0" rotation="-90 0 0" radius-inner="12" radius-outer="24" theta-length="180"
+        theta-start="90" color="#E74C3C" material="roughness: 0.7"></a-ring>
+      <a-ring position="25 0.01 0" rotation="-90 0 0" radius-inner="12" radius-outer="24" theta-length="180"
+        theta-start="270" color="#E74C3C" material="roughness: 0.7"></a-ring>
 
       <!-- 3. White Lane Divider Lines -->
       <a-plane position="0 0.02 12" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
@@ -148,17 +180,27 @@
       <a-plane position="0 0.02 -21" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
       <a-plane position="0 0.02 -24" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
 
-      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="11.9" radius-outer="12.1" theta-length="180" theta-start="90" color="#FFFFFF"></a-ring>
-      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="14.9" radius-outer="15.1" theta-length="180" theta-start="90" color="#FFFFFF"></a-ring>
-      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="17.9" radius-outer="18.1" theta-length="180" theta-start="90" color="#FFFFFF"></a-ring>
-      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="20.9" radius-outer="21.1" theta-length="180" theta-start="90" color="#FFFFFF"></a-ring>
-      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="23.9" radius-outer="24.1" theta-length="180" theta-start="90" color="#FFFFFF"></a-ring>
+      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="11.9" radius-outer="12.1" theta-length="180"
+        theta-start="90" color="#FFFFFF"></a-ring>
+      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="14.9" radius-outer="15.1" theta-length="180"
+        theta-start="90" color="#FFFFFF"></a-ring>
+      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="17.9" radius-outer="18.1" theta-length="180"
+        theta-start="90" color="#FFFFFF"></a-ring>
+      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="20.9" radius-outer="21.1" theta-length="180"
+        theta-start="90" color="#FFFFFF"></a-ring>
+      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="23.9" radius-outer="24.1" theta-length="180"
+        theta-start="90" color="#FFFFFF"></a-ring>
 
-      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="11.9" radius-outer="12.1" theta-length="180" theta-start="270" color="#FFFFFF"></a-ring>
-      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="14.9" radius-outer="15.1" theta-length="180" theta-start="270" color="#FFFFFF"></a-ring>
-      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="17.9" radius-outer="18.1" theta-length="180" theta-start="270" color="#FFFFFF"></a-ring>
-      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="20.9" radius-outer="21.1" theta-length="180" theta-start="270" color="#FFFFFF"></a-ring>
-      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="23.9" radius-outer="24.1" theta-length="180" theta-start="270" color="#FFFFFF"></a-ring>
+      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="11.9" radius-outer="12.1" theta-length="180"
+        theta-start="270" color="#FFFFFF"></a-ring>
+      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="14.9" radius-outer="15.1" theta-length="180"
+        theta-start="270" color="#FFFFFF"></a-ring>
+      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="17.9" radius-outer="18.1" theta-length="180"
+        theta-start="270" color="#FFFFFF"></a-ring>
+      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="20.9" radius-outer="21.1" theta-length="180"
+        theta-start="270" color="#FFFFFF"></a-ring>
+      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="23.9" radius-outer="24.1" theta-length="180"
+        theta-start="270" color="#FFFFFF"></a-ring>
 
       <!-- 4. Start / Finish Line -->
       <a-plane position="0 0.03 18" rotation="-90 0 0" width="0.8" height="12" color="#FFFFFF"></a-plane>
@@ -170,77 +212,90 @@
 
 
       <!-- =======================================================
-           GROUP 1: 6 SELECTION ROUNDED CARDS (TANPA ANGKA, ROUNDED CORNERS)
+           GROUP 1: VR MENU GROUP WITH FORWARD HOME BANNER & BACKWARD 6 SELECTION ROUNDED CARDS
            Title: Fusion Raceway Circuit
-           Top Row: 3 Kartu Berjejer
-           Bottom Row: 3 Kartu Berjejer
            ======================================================= -->
-      <a-entity id="vr-menu-group" visible="true">
-        
+      <a-entity id="vr-menu-group" visible="true" rotation="0 180 0">
+
+        <!-- Forward View Banner (Home.png) without white outline border -->
+        <a-image id="vr-home-banner" src="#img-home-banner" position="0 5 10" rotation="0 180 0" width="10.5" height="7" material="transparent: true; shader: flat"></a-image>
+
         <!-- Main Title (Menggunakan Font 'Luckiest Guy' Persis Halaman Awal) -->
         <a-entity vr-title="text: Fusion Raceway Circuit; width: 14; height: 3" position="0 8.5 -12"></a-entity>
 
         <!-- TOP ROW (3 KARTU ROUNDED BERJEJER) at y = 5.6, z = -12 -->
-        
+
         <!-- 1. Zig Zag -->
-        <a-entity id="card-zigzag" class="clickable vr-card-target" data-activity="zigzag" data-name="Zig Zag" position="-6.2 5.6 -12" rounded-card="title: Zig Zag; subtitle: [ GAMBAR ]; color: #FF4757; width: 5.2; height: 2.95">
+        <a-entity id="card-zigzag" class="clickable vr-card-target" data-activity="zigzag" data-name="Zig Zag"
+          position="-6.2 5.6 -12"
+          rounded-card="title: Zig Zag; subtitle: [ GAMBAR ]; color: #FF4757; width: 5.2; height: 2.95">
         </a-entity>
 
         <!-- 2. Hop Jump -->
-        <a-entity id="card-hopjump" class="clickable vr-card-target" data-activity="hopjump" data-name="Hop Jump" position="0 5.6 -12" rounded-card="title: Hop Jump; subtitle: [ 3D ANIMASI ]; imgSrc: Image/img_hopjump.png; is3d: true; color: #FF4757; width: 5.2; height: 2.95">
+        <a-entity id="card-hopjump" class="clickable vr-card-target" data-activity="hopjump" data-name="Hop Jump"
+          position="0 5.6 -12"
+          rounded-card="title: Hop Jump; subtitle: [ 3D ANIMASI ]; imgSrc: Image/img_hopjump.png; is3d: true; color: #FF4757; width: 5.2; height: 2.95">
         </a-entity>
 
         <!-- 3. Crab Move -->
-        <a-entity id="card-crabmove" class="clickable vr-card-target" data-activity="crabmove" data-name="Crab Move" position="6.2 5.6 -12" rounded-card="title: Crab Move; subtitle: [ GAMBAR ]; color: #FF4757; width: 5.2; height: 2.95">
+        <a-entity id="card-crabmove" class="clickable vr-card-target" data-activity="crabmove" data-name="Crab Move"
+          position="6.2 5.6 -12"
+          rounded-card="title: Crab Move; subtitle: [ GAMBAR ]; color: #FF4757; width: 5.2; height: 2.95">
         </a-entity>
 
 
         <!-- BOTTOM ROW (3 KARTU ROUNDED BERJEJER) at y = 2.2, z = -12 -->
-        
+
         <!-- 4. Throw Ball -->
-        <a-entity id="card-throwball" class="clickable vr-card-target" data-activity="throwball" data-name="Throw Ball" position="-6.2 2.2 -12" rounded-card="title: Throw Ball; subtitle: [ GAMBAR ]; color: #FF4757; width: 5.2; height: 2.95">
+        <a-entity id="card-throwball" class="clickable vr-card-target" data-activity="throwball" data-name="Throw Ball"
+          position="-6.2 2.2 -12"
+          rounded-card="title: Throw Ball; subtitle: [ GAMBAR ]; color: #FF4757; width: 5.2; height: 2.95">
         </a-entity>
 
         <!-- 5. Jump With Cone -->
-        <a-entity id="card-jumpcone" class="clickable vr-card-target" data-activity="jumpcone" data-name="Jump With Cone" position="0 2.2 -12" rounded-card="title: Jump With Cone; subtitle: [ GAMBAR ]; color: #FF4757; width: 5.2; height: 2.95">
+        <a-entity id="card-jumpcone" class="clickable vr-card-target" data-activity="jumpcone"
+          data-name="Jump With Cone" position="0 2.2 -12"
+          rounded-card="title: Jump With Cone; subtitle: [ GAMBAR ]; color: #FF4757; width: 5.2; height: 2.95">
         </a-entity>
 
         <!-- 6. Balance Touch -->
-        <a-entity id="card-balancetouch" class="clickable vr-card-target" data-activity="balancetouch" data-name="Balance Touch" position="6.2 2.2 -12" rounded-card="title: Balance Touch; subtitle: [ GAMBAR ]; color: #FF4757; width: 5.2; height: 2.95">
+        <a-entity id="card-balancetouch" class="clickable vr-card-target" data-activity="balancetouch"
+          data-name="Balance Touch" position="6.2 2.2 -12"
+          rounded-card="title: Balance Touch; subtitle: [ GAMBAR ]; color: #FF4757; width: 5.2; height: 2.95">
         </a-entity>
 
       </a-entity>
 
 
       <!-- =======================================================
-           GROUP 2: VR ACTIVITY DETAIL SCENE (SHOWS 3D ANIMATION)
+           GROUP 2: VR ACTIVITY DETAIL SCENE (HOP JUMP 3D ANIMATION)
            ======================================================= -->
       <a-entity id="vr-activity-group" visible="false">
-        <a-text id="activity-title-banner" value="PERMAINAN VR" position="0 3.5 -4" align="center" color="#FFFFFF" scale="2.2 2.2 2.2"></a-text>
-        <a-text value="Selamat Belajar & Berpetualang!" position="0 3 -4" align="center" color="#00CEC9" scale="1.1 1.1 1.1"></a-text>
+        <!-- 3D Title Banner for Hop Jump -->
+        <a-entity vr-title="text: HOP JUMP; width: 10; height: 2.2" position="0 5.2 -6.5"></a-entity>
 
-        <!-- 3D GLTF Model Container (Hop Jump Model) -->
-        <a-entity id="activity-model-container" position="0 0 -5">
-          <a-entity id="active-gltf-model" gltf-model="url(3D Asset/hopjump_24.glb)" animation-mixer="clip: *; loop: repeat" position="0 0 0" scale="1 1 1"></a-entity>
+        <!-- 3D Shape Interaktif Kembali ke Menu VR -->
+        <a-entity id="vr-3d-back-shape" class="clickable" position="-5.5 5.2 -6.5" scale="1 1 1">
+          <!-- Invisible Hitbox Area for Responsive Gaze -->
+          <a-plane class="clickable" width="0.8" height="0.8" material="transparent: true; opacity: 0"
+            position="0 0 0.005"></a-plane>
+          <a-circle class="clickable" radius="0.32" color="#FF4757" material="shader: flat; side: double"></a-circle>
+          <a-ring class="clickable" radius-inner="0.28" radius-outer="0.32" color="#FFFFFF" position="0 0 0.01"></a-ring>
+          <a-plane id="vr-3d-back-icon-plane" class="clickable" width="0.4" height="0.4"
+            material="src: Image/back.png; transparent: true; opacity: 1; shader: flat" position="0 0 0.02"></a-plane>
         </a-entity>
 
-        <!-- 3D Return Button in VR -->
-        <a-entity id="3d-btn-back-menu" class="clickable" position="0 0.5 -3">
-          <a-plane width="2.2" height="0.6" color="#FF4757" material="roughness: 0.2"></a-plane>
-          <a-text value="⬅️ KEMBALI KE MENU VR" position="0 0 0.02" align="center" color="#FFFFFF" scale="0.8 0.8 0.8"></a-text>
-        </a-entity>
+        <!-- Native 3D Model hopjump_24.glb -->
+        <a-gltf-model id="hopjump-gltf-model" src="3D Asset/hopjump_24.glb" animation-mixer="clip: *; loop: repeat"
+          position="-5.4 0.2 -6.5" rotation="0 90 0" scale="2.2 2.2 2.2">
+        </a-gltf-model>
       </a-entity>
 
 
       <!-- VR Camera Rig at Center of the Field -->
       <a-entity id="rig" position="0 1.6 0">
         <a-camera id="main-camera" look-controls="pointerLockEnabled: false" wasd-controls="fly: false">
-          <a-cursor
-            id="vr-cursor"
-            color="#FF4757"
-            fuse="true"
-            fuse-timeout="2500"
-            raycaster="objects: .clickable"
+          <a-cursor id="vr-cursor" color="#FF4757" fuse="true" fuse-timeout="2500" raycaster="objects: .clickable"
             animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
             animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 2500; from: 1 1 1; to: 0.2 0.2 0.2"
             animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 150; to: 1 1 1">
@@ -251,114 +306,6 @@
     </a-scene>
   </div>
 
-
-  <!-- =========================================================
-       HALAMAN A-FRAME KHUSUS: DEDICATED HOP JUMP 3D SCENE
-       ========================================================= -->
-  <div id="vr-hopjump-wrapper" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10000;">
-    
-    <!-- Top HUD Navigation inside Hop Jump VR Scene -->
-    <div class="vr-hud-bar">
-      <button id="btn-hopjump-back" class="btn-hud-back" type="button" aria-label="Kembali ke Menu VR" title="Kembali ke Menu VR">
-        <img src="Image/back.png" alt="Kembali" class="btn-hud-icon-img">
-      </button>
-    </div>
-
-    <!-- Dedicated Hop Jump A-Frame Scene Container (Stadion Lintasan Lari Lonjong Identik) -->
-    <a-scene id="hopjump-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" embedded="false">
-      
-      <a-assets>
-        <img id="img-back-icon" src="Image/back.png">
-      </a-assets>
-
-      <!-- Outdoor Skybox & Lighting -->
-      <a-sky color="#00A8FF"></a-sky>
-      <a-ambient-light color="#FFFFFF" intensity="0.9"></a-ambient-light>
-      <a-directional-light color="#FDCB6E" intensity="1.5" position="-15 25 20"></a-directional-light>
-      <a-point-light color="#00CEC9" intensity="0.8" position="0 10 0"></a-point-light>
-
-      <!-- 1. Single Uniform Lush Grass Field Ground (100% Identik Dunia VR 1) -->
-      <a-plane position="0 0 0" rotation="-90 0 0" width="200" height="160" color="#27AE60" material="roughness: 0.8"></a-plane>
-
-      <!-- 2. Red Terracotta Oval Track -->
-      <a-plane position="0 0.01 18" rotation="-90 0 0" width="50" height="12" color="#E74C3C" material="roughness: 0.7"></a-plane>
-      <a-plane position="0 0.01 -18" rotation="-90 0 0" width="50" height="12" color="#E74C3C" material="roughness: 0.7"></a-plane>
-
-      <a-ring position="-25 0.01 0" rotation="-90 0 0" radius-inner="12" radius-outer="24" theta-length="180" theta-start="90" color="#E74C3C" material="roughness: 0.7"></a-ring>
-      <a-ring position="25 0.01 0" rotation="-90 0 0" radius-inner="12" radius-outer="24" theta-length="180" theta-start="270" color="#E74C3C" material="roughness: 0.7"></a-ring>
-
-      <!-- 3. White Lane Divider Lines -->
-      <a-plane position="0 0.02 12" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
-      <a-plane position="0 0.02 15" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
-      <a-plane position="0 0.02 18" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
-      <a-plane position="0 0.02 21" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
-      <a-plane position="0 0.02 24" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
-
-      <a-plane position="0 0.02 -12" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
-      <a-plane position="0 0.02 -15" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
-      <a-plane position="0 0.02 -18" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
-      <a-plane position="0 0.02 -21" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
-      <a-plane position="0 0.02 -24" rotation="-90 0 0" width="50" height="0.12" color="#FFFFFF"></a-plane>
-
-      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="11.9" radius-outer="12.1" theta-length="180" theta-start="90" color="#FFFFFF"></a-ring>
-      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="14.9" radius-outer="15.1" theta-length="180" theta-start="90" color="#FFFFFF"></a-ring>
-      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="17.9" radius-outer="18.1" theta-length="180" theta-start="90" color="#FFFFFF"></a-ring>
-      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="20.9" radius-outer="21.1" theta-length="180" theta-start="90" color="#FFFFFF"></a-ring>
-      <a-ring position="-25 0.02 0" rotation="-90 0 0" radius-inner="23.9" radius-outer="24.1" theta-length="180" theta-start="90" color="#FFFFFF"></a-ring>
-
-      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="11.9" radius-outer="12.1" theta-length="180" theta-start="270" color="#FFFFFF"></a-ring>
-      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="14.9" radius-outer="15.1" theta-length="180" theta-start="270" color="#FFFFFF"></a-ring>
-      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="17.9" radius-outer="18.1" theta-length="180" theta-start="270" color="#FFFFFF"></a-ring>
-      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="20.9" radius-outer="21.1" theta-length="180" theta-start="270" color="#FFFFFF"></a-ring>
-      <a-ring position="25 0.02 0" rotation="-90 0 0" radius-inner="23.9" radius-outer="24.1" theta-length="180" theta-start="270" color="#FFFFFF"></a-ring>
-
-      <!-- 4. Start / Finish Line -->
-      <a-plane position="0 0.03 18" rotation="-90 0 0" width="0.8" height="12" color="#FFFFFF"></a-plane>
-      <a-plane position="0 0.035 18" rotation="-90 0 0" width="0.3" height="11.8" color="#FF4757"></a-plane>
-
-      <!-- 5. Decorative Cones -->
-      <a-cone position="-25 0.4 24.5" radius-bottom="0.35" radius-top="0.05" height="0.8" color="#FFA502"></a-cone>
-      <a-cone position="25 0.4 24.5" radius-bottom="0.35" radius-top="0.05" height="0.8" color="#FFA502"></a-cone>
-
-      <!-- 3D Title Banner for Hop Jump -->
-      <a-entity vr-title="text: HOP JUMP; width: 10; height: 2.2" position="0 5.2 -6.5"></a-entity>
-
-      <!-- 3D Shape Interaktif Kembali ke Menu VR (Ukuran Ekstra Ringkas & Ikon Putih) -->
-      <a-entity id="vr-3d-back-shape" class="clickable" position="-5.5 5.2 -6.5" scale="1 1 1">
-        <!-- Invisible Hitbox Area for Responsive Gaze -->
-        <a-plane class="clickable" width="0.8" height="0.8" material="transparent: true; opacity: 0" position="0 0 0.005"></a-plane>
-        <a-circle class="clickable" radius="0.32" color="#FF4757" material="shader: flat; side: double"></a-circle>
-        <a-ring class="clickable" radius-inner="0.28" radius-outer="0.32" color="#FFFFFF" position="0 0 0.01"></a-ring>
-        <a-plane id="vr-3d-back-icon-plane" class="clickable" width="0.4" height="0.4" material="src: Image/back.png; transparent: true; opacity: 1; shader: flat" position="0 0 0.02"></a-plane>
-      </a-entity>
-
-      <!-- Native 3D Model hopjump_24.glb (Ukuran Diperbesar Sedikit Pas) -->
-      <a-gltf-model
-        id="hopjump-gltf-model"
-        src="3D Asset/hopjump_24.glb"
-        animation-mixer="clip: *; loop: repeat"
-        position="-5.4 0.2 -6.5"
-        rotation="0 90 0"
-        scale="2.2 2.2 2.2">
-      </a-gltf-model>
-
-      <!-- Camera Rig with Gaze Auto-Trigger (Fuse Timeout 1.2 detik) -->
-      <a-entity position="0 1.6 0">
-        <a-camera id="hopjump-camera" look-controls="pointerLockEnabled: false" wasd-controls="fly: false">
-          <a-cursor color="#FF4757"
-                    fuse="true"
-                    fuse-timeout="1200"
-                    raycaster="objects: .clickable"
-                    animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1"
-                    animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1200; from: 1 1 1; to: 0.1 0.1 0.1">
-          </a-cursor>
-        </a-camera>
-      </a-entity>
-
-    </a-scene>
-  </div>
-
-  <!-- JavaScript Logic -->
-  <script src="main.js"></script>
 </body>
+
 </html>
