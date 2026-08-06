@@ -171,25 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const vrHopjumpWrapper = document.getElementById('vr-hopjump-wrapper');
   const btnHopjumpBack = document.getElementById('btn-hopjump-back');
 
-  // VR Mode Stereo Toggle Buttons (Splits Screen into Dual Stereo Eyes)
-  const btnToggleVrMode = document.getElementById('btn-toggle-vr-mode');
-  const btnHopjumpVrMode = document.getElementById('btn-hopjump-vr-mode');
-
-  const toggleStereoVRMode = (sceneId) => {
-    playSound('start');
-    const scene = document.getElementById(sceneId) || document.querySelector('a-scene');
-    if (scene) {
-      if (scene.is('vr-mode')) {
-        scene.exitVR();
-      } else {
-        scene.enterVR();
-      }
-    }
-  };
-
-  if (btnToggleVrMode) btnToggleVrMode.addEventListener('click', () => toggleStereoVRMode('main-scene'));
-  if (btnHopjumpVrMode) btnHopjumpVrMode.addEventListener('click', () => toggleStereoVRMode('hopjump-scene'));
-
   // Web Audio FX
   const playSound = (type = 'click') => {
     try {
