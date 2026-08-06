@@ -457,6 +457,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // Helper to recursively toggle visibility on A-Frame entity and all underlying Three.js child meshes
+  const setGroupVisibility = (el, isVisible) => {
+    if (!el) return;
+    el.setAttribute('visible', isVisible ? 'true' : 'false');
+    if (el.object3D) {
+      el.object3D.visible = isVisible;
+      el.object3D.traverse((child) => {
+        child.visible = isVisible;
+      });
+    }
+  };
+
   // --- VR Scene Navigation ---
   const enterVRScene = () => {
     playSound('start');
@@ -469,9 +481,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const vrMenuGroup = document.getElementById('vr-menu-group');
     const vrActivityGroup = document.getElementById('vr-activity-group');
     const vrHomeBanner = document.getElementById('vr-home-banner');
-    if (vrMenuGroup) vrMenuGroup.setAttribute('visible', 'true');
-    if (vrActivityGroup) vrActivityGroup.setAttribute('visible', 'false');
-    if (vrHomeBanner) vrHomeBanner.setAttribute('visible', 'true');
+    setGroupVisibility(vrMenuGroup, true);
+    setGroupVisibility(vrActivityGroup, false);
+    setGroupVisibility(vrHomeBanner, true);
     stopHopJumpAnimation();
 
     resetCameraView('main-camera');
@@ -494,9 +506,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const vrMenuGroup = document.getElementById('vr-menu-group');
     const vrActivityGroup = document.getElementById('vr-activity-group');
     const vrHomeBanner = document.getElementById('vr-home-banner');
-    if (vrActivityGroup) vrActivityGroup.setAttribute('visible', 'false');
-    if (vrMenuGroup) vrMenuGroup.setAttribute('visible', 'true');
-    if (vrHomeBanner) vrHomeBanner.setAttribute('visible', 'true');
+    setGroupVisibility(vrActivityGroup, false);
+    setGroupVisibility(vrMenuGroup, true);
+    setGroupVisibility(vrHomeBanner, true);
 
     if (vrWrapper) {
       vrWrapper.classList.remove('active');
@@ -552,12 +564,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const vrMenuGroup = document.getElementById('vr-menu-group');
     const vrActivityGroup = document.getElementById('vr-activity-group');
     const vrHomeBanner = document.getElementById('vr-home-banner');
-    if (vrMenuGroup) vrMenuGroup.setAttribute('visible', 'false');
-    if (vrActivityGroup) {
-      vrActivityGroup.setAttribute('visible', 'true');
-      vrActivityGroup.setAttribute('rotation', '0 180 0');
-    }
-    if (vrHomeBanner) vrHomeBanner.setAttribute('visible', 'false');
+
+    setGroupVisibility(vrMenuGroup, false);
+    setGroupVisibility(vrActivityGroup, true);
+    if (vrActivityGroup) vrActivityGroup.setAttribute('rotation', '0 180 0');
+    setGroupVisibility(vrHomeBanner, false);
 
     resetHopJumpAnimation();
     applyWhiteBackTexture();
@@ -571,12 +582,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const vrMenuGroup = document.getElementById('vr-menu-group');
     const vrActivityGroup = document.getElementById('vr-activity-group');
     const vrHomeBanner = document.getElementById('vr-home-banner');
-    if (vrActivityGroup) {
-      vrActivityGroup.setAttribute('visible', 'false');
-      vrActivityGroup.setAttribute('rotation', '0 180 0');
-    }
-    if (vrMenuGroup) vrMenuGroup.setAttribute('visible', 'true');
-    if (vrHomeBanner) vrHomeBanner.setAttribute('visible', 'true');
+
+    setGroupVisibility(vrActivityGroup, false);
+    if (vrActivityGroup) vrActivityGroup.setAttribute('rotation', '0 180 0');
+    setGroupVisibility(vrMenuGroup, true);
+    setGroupVisibility(vrHomeBanner, true);
   };
 
   // Setup Event Listeners for 6 VR Menu Cards
