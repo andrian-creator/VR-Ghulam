@@ -40,18 +40,18 @@ if (typeof AFRAME !== 'undefined') {
       const cx = canvas.width / 2;
       const cy = canvas.height / 2;
 
-      ctx.fillStyle = '#FFA502';
-      ctx.fillText(this.data.text, cx + 7, cy + 7);
+      // 1. Deep Red 3D Shadow (#C0392B Bayangan Merah Kedalaman)
+      ctx.fillStyle = '#C0392B';
+      ctx.fillText(this.data.text, cx + 4, cy + 4);
 
-      ctx.fillStyle = '#FF4757';
-      ctx.fillText(this.data.text, cx + 3.5, cy + 3.5);
-
+      // 2. Thick Crisp White Outline (#FFFFFF)
       ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 10;
+      ctx.lineWidth = 14;
       ctx.lineJoin = 'round';
       ctx.strokeText(this.data.text, cx, cy);
 
-      ctx.fillStyle = '#4A3E85';
+      // 3. Primary Text Fill: 100% SAMAKAN WARNA TOMBOL (#FF4757)
+      ctx.fillStyle = '#FF4757';
       ctx.fillText(this.data.text, cx, cy);
 
       const texture = new THREE.CanvasTexture(canvas);
@@ -238,6 +238,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // Camera View Reset Helper (Resets Camera Position & Rotation to Initial Setting 0 1.6 0 and 0 0 0)
+  const resetCameraView = (cameraId) => {
+    const cameraEl = document.getElementById(cameraId);
+    if (!cameraEl) return;
+
+    cameraEl.setAttribute('position', '0 1.6 0');
+    cameraEl.setAttribute('rotation', '0 0 0');
+
+    if (cameraEl.object3D) {
+      cameraEl.object3D.position.set(0, 1.6, 0);
+      cameraEl.object3D.rotation.set(0, 0, 0);
+    }
+
+    if (cameraEl.components && cameraEl.components['look-controls']) {
+      const lc = cameraEl.components['look-controls'];
+      if (lc.pitchObject) lc.pitchObject.rotation.x = 0;
+      if (lc.yawObject) lc.yawObject.rotation.y = 0;
+    }
+  };
+
   // --- VR Scene Navigation ---
   const enterVRScene = () => {
     playSound('start');
@@ -246,6 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
       vrWrapper.classList.add('active');
       vrWrapper.style.display = 'block';
     }
+
+    resetCameraView('main-camera');
 
     const scene = document.querySelector('a-scene');
     if (scene) {
@@ -259,6 +281,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const exitVRScene = () => {
     playSound('click');
+    stopHopJumpAnimation();
+    resetCameraView('main-camera');
+    resetCameraView('hopjump-camera');
+
     if (vrHopjumpWrapper) vrHopjumpWrapper.style.display = 'none';
     if (vrWrapper) {
       vrWrapper.classList.remove('active');
@@ -314,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Open Dedicated Hop Jump A-Frame Scene (Resets Animation from Frame 0)
+  // Open Dedicated Hop Jump A-Frame Scene (Resets Animation from Frame 0 & Camera View)
   const openHopJumpScene = () => {
     playSound('success');
     if (vrWrapper) vrWrapper.style.display = 'none';
@@ -323,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     resetHopJumpAnimation();
+    resetCameraView('hopjump-camera');
 
     const hopjumpScene = document.getElementById('hopjump-scene');
     if (hopjumpScene) {
@@ -334,10 +361,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Close Hop Jump Scene and Return to Main VR Menu
+  // Close Hop Jump Scene and Return to Main VR Menu (Resets Camera View)
   const closeHopJumpScene = () => {
     playSound('click');
     stopHopJumpAnimation();
+    resetCameraView('main-camera');
+
     if (vrHopjumpWrapper) vrHopjumpWrapper.style.display = 'none';
     if (vrWrapper) {
       vrWrapper.style.display = 'block';
@@ -368,6 +397,76 @@ document.addEventListener('DOMContentLoaded', () => {
   attachCardListeners();
 
   // Navigation Event Listeners
+  const vr3dBackShape = document.getElementById('vr-3d-back-shape');
+  if (vr3dBackShape) {
+    const triggerBackToVRMenu = () => {
+      playSound('click');
+      closeHopJumpScene();
+    };
+
+    // Attach listeners to container and all child mesh elements
+    vr3dBackShape.addEventListener('click', triggerBackToVRMenu);
+    vr3dBackShape.addEventListener('fused', triggerBackToVRMenu);
+    
+    const clickables = vr3dBackShape.querySelectorAll('.clickable');
+    clickables.forEach(elem => {
+      elem.addEventListener('click', triggerBackToVRMenu);
+      elem.addEventListener('fused', triggerBackToVRMenu);
+    });
+
+    vr3dBackShape.addEventListener('mouseenter', () => {
+      playSound('pop');
+      vr3dBackShape.setAttribute('animation__scale', 'property: scale; to: 1.25 1.25 1.25; dur: 200; easing: easeOutCubic');
+    });
+
+    vr3dBackShape.addEventListener('mouseleave', () => {
+      vr3dBackShape.setAttribute('animation__scale', 'property: scale; to: 1 1 1; dur: 200; easing: easeOutCubic');
+    });
+  }
+
+  // Dynamic Canvas Texture Generator for Pure White 3D Back Icon
+  const applyWhiteBackTexture = () => {
+    const iconPlane = document.getElementById('vr-3d-back-icon-plane');
+    if (!iconPlane) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = 'Image/back.png';
+    img.onload = () => {
+      ctx.clearRect(0, 0, 128, 128);
+      ctx.drawImage(img, 0, 0, 128, 128);
+      const imgData = ctx.getImageData(0, 0, 128, 128);
+      const data = imgData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] > 10) { // Visible pixel
+          data[i] = 255;     // R
+          data[i + 1] = 255; // G
+          data[i + 2] = 255; // B
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+      
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.needsUpdate = true;
+
+      const updateMat = () => {
+        if (iconPlane.components && iconPlane.components.material && iconPlane.components.material.material) {
+          iconPlane.components.material.material.map = texture;
+          iconPlane.components.material.material.needsUpdate = true;
+        } else {
+          setTimeout(updateMat, 100);
+        }
+      };
+      updateMat();
+    };
+  };
+
+  applyWhiteBackTexture();
+
   if (btnHopjumpBack) btnHopjumpBack.addEventListener('click', closeHopJumpScene);
   if (btnHeroVR) btnHeroVR.addEventListener('click', enterVRScene);
   if (btnVrBack) btnVrBack.addEventListener('click', exitVRScene);
