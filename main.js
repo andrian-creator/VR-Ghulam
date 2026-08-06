@@ -37,6 +37,39 @@ if (typeof AFRAME !== 'undefined') {
     }
   });
 
+  // Register Dedicated 3D Back Button Component for Reliable Gaze Interaction on Mobile
+  AFRAME.registerComponent('vr-3d-back-btn', {
+    init: function () {
+      const el = this.el;
+      const triggerBack = () => {
+        if (typeof playSound === 'function') playSound('click');
+        if (typeof closeHopJumpScene === 'function') closeHopJumpScene();
+      };
+
+      const handleHover = () => {
+        if (typeof playSound === 'function') playSound('pop');
+        el.setAttribute('animation__scale', 'property: scale; to: 1.25 1.25 1.25; dur: 200; easing: easeOutCubic');
+      };
+
+      const handleLeave = () => {
+        el.setAttribute('animation__scale', 'property: scale; to: 1 1 1; dur: 200; easing: easeOutCubic');
+      };
+
+      el.addEventListener('click', triggerBack);
+      el.addEventListener('fused', triggerBack);
+      el.addEventListener('mouseenter', handleHover);
+      el.addEventListener('mouseleave', handleLeave);
+
+      const targets = el.querySelectorAll('.clickable');
+      targets.forEach(target => {
+        target.addEventListener('click', triggerBack);
+        target.addEventListener('fused', triggerBack);
+        target.addEventListener('mouseenter', handleHover);
+        target.addEventListener('mouseleave', handleLeave);
+      });
+    }
+  });
+
   // 1. Register VR Main Title Component (Luckiest Guy 3D Font)
   AFRAME.registerComponent('vr-title', {
     schema: {
