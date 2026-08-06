@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Fusion Raceway Circuit - WebVR Experience</title>
   
-  <!-- A-Frame VR Library & Animation Extras -->
+  <!-- A-Frame VR Library & WebVR Cardboard Polyfill -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/webvr-polyfill/webvr-polyfill@latest/build/webvr-polyfill.min.js"></script>
 
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="styles.css">
@@ -113,13 +114,13 @@
       <button id="btn-vr-back" class="btn-hud-back" type="button">
         <span>⬅️</span> Dashboard Utama
       </button>
-      <button id="btn-vr-menu-back" class="btn-hud-back btn-hud-secondary" type="button" style="display: none;">
-        <span>🎮</span> Menu VR
+      <button id="btn-toggle-vr-mode" class="btn-hud-back btn-hud-vr" type="button">
+        <span>🥽</span> Mode Kacamata VR (Split 2 Layar)
       </button>
     </div>
 
     <!-- 3D Athletics Oval Track Scene with 6 Selection Cards -->
-    <a-scene loading-screen="enabled: false" embedded="false">
+    <a-scene id="main-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" embedded="false">
       
       <!-- Bright Outdoor Skybox & Lighting -->
       <a-sky color="#00A8FF"></a-sky>
@@ -264,10 +265,13 @@
       <button id="btn-hopjump-back" class="btn-hud-back" type="button">
         <span>⬅️</span> Kembali ke Menu VR
       </button>
+      <button id="btn-hopjump-vr-mode" class="btn-hud-back btn-hud-vr" type="button">
+        <span>🥽</span> Mode Kacamata VR (Split 2 Layar)
+      </button>
     </div>
 
     <!-- Dedicated Hop Jump A-Frame Scene Container (Stadion Lintasan Lari Lonjong Identik) -->
-    <a-scene id="hopjump-scene" loading-screen="enabled: false" embedded="false">
+    <a-scene id="hopjump-scene" vr-mode-ui="enabled: true" loading-screen="enabled: false" embedded="false">
       
       <!-- Outdoor Skybox & Lighting -->
       <a-sky color="#00A8FF"></a-sky>

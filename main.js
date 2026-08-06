@@ -3,6 +3,16 @@
  * Dynamically matches card shape aspect ratio to image aspect ratio (Zero Cropping, Zero Bars).
  */
 
+// Initialize WebVR Cardboard Polyfill (Guarantees 2-Eye Stereo Split on Desktop & Mobile)
+if (typeof WebVRPolyfill !== 'undefined') {
+  try {
+    new WebVRPolyfill();
+    console.log('🥽 WebVR Cardboard Polyfill Active!');
+  } catch (e) {
+    console.log('WebVRPolyfill init:', e);
+  }
+}
+
 if (typeof AFRAME !== 'undefined') {
   
   // 1. Register VR Main Title Component (Luckiest Guy 3D Font)
@@ -160,6 +170,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // Dedicated Hop Jump A-Frame Scene Container
   const vrHopjumpWrapper = document.getElementById('vr-hopjump-wrapper');
   const btnHopjumpBack = document.getElementById('btn-hopjump-back');
+
+  // VR Mode Stereo Toggle Buttons (Splits Screen into Dual Stereo Eyes)
+  const btnToggleVrMode = document.getElementById('btn-toggle-vr-mode');
+  const btnHopjumpVrMode = document.getElementById('btn-hopjump-vr-mode');
+
+  const toggleStereoVRMode = (sceneId) => {
+    playSound('start');
+    const scene = document.getElementById(sceneId) || document.querySelector('a-scene');
+    if (scene) {
+      if (scene.is('vr-mode')) {
+        scene.exitVR();
+      } else {
+        scene.enterVR();
+      }
+    }
+  };
+
+  if (btnToggleVrMode) btnToggleVrMode.addEventListener('click', () => toggleStereoVRMode('main-scene'));
+  if (btnHopjumpVrMode) btnHopjumpVrMode.addEventListener('click', () => toggleStereoVRMode('hopjump-scene'));
 
   // Web Audio FX
   const playSound = (type = 'click') => {

@@ -404,8 +404,32 @@ html, body {
   left: 0 !important;
 }
 
-/* Hide A-Frame Loading Overlays */
-.a-loader-title, .a-orientation-modal, .a-enter-vr {
+/* Native A-Frame VR Goggles Button (Pojok Kanan Bawah) */
+.a-enter-vr {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  z-index: 999999 !important;
+  display: block !important;
+}
+
+.a-enter-vr-button {
+  display: block !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  background-color: #00CEC9 !important;
+  box-shadow: 0 8px 24px rgba(0, 206, 201, 0.6) !important;
+  border: 2px solid #FFFFFF !important;
+  transition: transform 0.2s ease !important;
+}
+
+.a-enter-vr-button:hover {
+  transform: scale(1.1) !important;
+}
+
+/* Hide A-Frame Loading Title Overlay */
+.a-loader-title, .a-orientation-modal {
   display: none !important;
 }
 
@@ -414,6 +438,9 @@ html, body {
   top: 20px;
   left: 20px;
   z-index: 6000;
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .btn-hud-back {
@@ -443,6 +470,18 @@ html, body {
 
 .btn-hud-back:active {
   transform: translateY(1px);
+}
+
+.btn-hud-vr {
+  background: linear-gradient(135deg, #00CEC9 0%, #0984E3 100%);
+  border-color: #00CEC9;
+  box-shadow: 0 6px 20px rgba(0, 206, 201, 0.4);
+}
+
+.btn-hud-vr:hover {
+  background: linear-gradient(135deg, #0984E3 0%, #00CEC9 100%);
+  box-shadow: 0 10px 28px rgba(0, 206, 201, 0.6);
+  transform: translateY(-2px);
 }
 
 .btn-hud-secondary {
