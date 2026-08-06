@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Open Dedicated Hop Jump A-Frame Scene (Resets Animation from Frame 0 & Camera View)
+  // Open Dedicated Hop Jump A-Frame Scene (Resets Animation & Aligns Scene to Player Gaze)
   const openHopJumpScene = () => {
     playSound('success');
     const vrMenuGroup = document.getElementById('vr-menu-group');
@@ -556,12 +556,24 @@ document.addEventListener('DOMContentLoaded', () => {
     if (vrActivityGroup) vrActivityGroup.setAttribute('visible', 'true');
     if (vrHomeBanner) vrHomeBanner.setAttribute('visible', 'false');
 
+    // Align activity group directly to player's current camera orientation on mobile/desktop
+    const cameraEl = document.getElementById('main-camera');
+    if (cameraEl && vrActivityGroup) {
+      let currentYawRad = 0;
+      if (cameraEl.components && cameraEl.components['look-controls'] && cameraEl.components['look-controls'].yawObject) {
+        currentYawRad = cameraEl.components['look-controls'].yawObject.rotation.y;
+      } else if (cameraEl.object3D) {
+        currentYawRad = cameraEl.object3D.rotation.y;
+      }
+      const currentYawDeg = (currentYawRad * 180 / Math.PI);
+      vrActivityGroup.setAttribute('rotation', `0 ${currentYawDeg} 0`);
+    }
+
     resetHopJumpAnimation();
-    resetCameraView('main-camera');
     applyWhiteBackTexture();
   };
 
-  // Close Hop Jump Scene and Return to Main VR Menu (Resets Camera View)
+  // Close Hop Jump Scene and Return to Main VR Menu
   const closeHopJumpScene = () => {
     playSound('click');
     stopHopJumpAnimation();
@@ -569,11 +581,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const vrMenuGroup = document.getElementById('vr-menu-group');
     const vrActivityGroup = document.getElementById('vr-activity-group');
     const vrHomeBanner = document.getElementById('vr-home-banner');
-    if (vrActivityGroup) vrActivityGroup.setAttribute('visible', 'false');
+    if (vrActivityGroup) {
+      vrActivityGroup.setAttribute('visible', 'false');
+      vrActivityGroup.setAttribute('rotation', '0 0 0');
+    }
     if (vrMenuGroup) vrMenuGroup.setAttribute('visible', 'true');
     if (vrHomeBanner) vrHomeBanner.setAttribute('visible', 'true');
-
-    resetCameraView('main-camera');
   };
 
   // Setup Event Listeners for 6 VR Menu Cards
