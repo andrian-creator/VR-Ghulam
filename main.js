@@ -503,6 +503,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetHopJumpAnimation();
     resetCameraView('main-camera');
+    applyWhiteBackTexture();
   };
 
   // Close Hop Jump Scene and Return to Main VR Menu (Resets Camera View)
