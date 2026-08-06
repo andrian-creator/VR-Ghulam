@@ -499,38 +499,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (appViewport) appViewport.style.display = 'flex';
   };
 
-  // Function to Reset GLTF Animation from Frame 0
+  // Function to Reset GLTF Animation Smoothly from Frame 0.00s
   const resetHopJumpAnimation = () => {
     const hopjumpModel = document.getElementById('hopjump-gltf-model');
     if (!hopjumpModel) return;
 
-    hopjumpModel.removeAttribute('animation-mixer');
-
-    if (hopjumpModel.components && hopjumpModel.components['animation-mixer']) {
-      const mixerComp = hopjumpModel.components['animation-mixer'];
-      if (mixerComp.mixer) {
-        mixerComp.mixer.stopAllAction();
-        if (mixerComp.activeActions) {
-          mixerComp.activeActions.forEach(action => {
-            action.reset();
-            action.stop();
-          });
-        }
-      }
-    }
-
-    setTimeout(() => {
+    const playCleanFromStart = () => {
       hopjumpModel.setAttribute('animation-mixer', 'clip: *; loop: repeat; timeScale: 1');
       if (hopjumpModel.components && hopjumpModel.components['animation-mixer']) {
         const mixerComp = hopjumpModel.components['animation-mixer'];
-        if (mixerComp.mixer && mixerComp.activeActions) {
-          mixerComp.activeActions.forEach(action => {
-            action.reset();
-            action.play();
-          });
+        if (mixerComp.mixer) {
+          mixerComp.mixer.setTime(0);
+          if (mixerComp.activeActions) {
+            mixerComp.activeActions.forEach(action => {
+              action.reset();
+              action.play();
+            });
+          }
         }
       }
-    }, 60);
+    };
+
+    if (hopjumpModel.components['gltf-model'] && hopjumpModel.components['gltf-model'].model) {
+      playCleanFromStart();
+    } else {
+      hopjumpModel.addEventListener('model-loaded', playCleanFromStart, { once: true });
+    }
   };
 
   const stopHopJumpAnimation = () => {
